@@ -141,7 +141,8 @@ RC Table::drop(Db *db, const char *path, const char *base_dir)
   std::string        data_file = table_data_file(base_dir, this->name());
   BufferPoolManager &bpm       = db->buffer_pool_manager();
   rc = bpm.close_file(data_file.c_str());//这里要借助bufferpoolmanager完成
-   if (rc != RC::SUCCESS) {
+  data_buffer_pool_ = nullptr;
+  if (rc != RC::SUCCESS) {
     LOG_ERROR("Failed to close bufferpoolfile %s.", data_file.c_str());
     return rc;
   }

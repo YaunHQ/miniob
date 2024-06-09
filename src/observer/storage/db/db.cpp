@@ -187,7 +187,7 @@ RC Db::drop_table(const char *table_name)
   opened_tables_.erase(iter);//不直接使用Db::find_table的原因，我们要清除键值对
   delete table;
   table = nullptr;
-  LOG_INFO("Drop table success. table name=%s, table_id:%d", table_name, table->table_id());
+  LOG_INFO("Drop table success. table name=%s", table_name);
   return RC::SUCCESS;
 }
 
