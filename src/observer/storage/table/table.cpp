@@ -127,9 +127,33 @@ RC Table::create(Db *db, int32_t table_id, const char *path, const char *name, c
   return rc;
 }
 
-RC Table::drop(Db *db, int32_t table_id, const char *path, const char *name, const char *base_dir)
+RC Table::drop(Db *db, const char *path, const char *base_dir)
 {
+  LOG_INFO("Begin to drop table %s:%s", base_dir, this->name());
+
   RC rc = RC::SUCCESS;
+
+  //destroy record_handler
+  
+  delete record_handler_;
+  record_handler_=nullptr;
+  //remove bufferpool_file and data_file
+  std::string        data_file = table_data_file(base_dir, this->name());
+  BufferPoolManager &bpm       = db->buffer_pool_manager();
+  rc = bpm.close_file(data_file.c_str());//这里要借助bufferpoolmanager完成
+   if (rc != RC::SUCCESS) {
+    LOG_ERROR("Failed to close bufferpoolfile %s.", data_file.c_str());
+    return rc;
+  }
+  if(0 != ::remove(data_file.c_str())){
+    LOG_ERROR("Failed to remove file %s, error:%s", data_file.c_str(), strerror(errno));
+    rc = RC::FILE_REMOVE;
+  }
+  //remove meta_file
+  if(0 != ::remove(path)){
+    LOG_ERROR("Failed to remove file %s, error:%s", path, strerror(errno));
+    rc = RC::FILE_REMOVE;
+  }
   return rc;
 }
 

@@ -165,7 +165,30 @@ RC Db::create_table(const char *table_name, span<const AttrInfoSqlNode> attribut
 RC Db::drop_table(const char *table_name)
 {
   RC rc = RC::SUCCESS;
-  return rc;
+  unordered_map<string, Table *>::const_iterator iter = opened_tables_.find(table_name);//仿照Db::find_table实现，该函数就在下面。NOTE疑问？为什么是去opened_tables_里面找，关闭的table怎么办？
+  if (iter == opened_tables_.end()) {
+      LOG_WARN("%s doesn't exist.", table_name);
+      return RC::SCHEMA_TABLE_NOT_EXIST; 
+  }
+
+  Table * table  = iter->second;
+  if (table == nullptr) {
+      LOG_WARN("%s doesn't exist.", table_name);
+      return RC::SCHEMA_TABLE_NOT_EXIST; 
+  }
+
+  std::string table_file_path = table_meta_file(path_.c_str(), table_name);
+  rc = table->drop(this, table_file_path.c_str(), path_.c_str());//table知道自己的name和id，不过存在table_meta里面，所以在table类中获取要调用函数
+  if (rc != RC::SUCCESS) {
+    LOG_ERROR("Failed to drop table %s.", table_name);
+    return rc;
+  }
+  
+  opened_tables_.erase(iter);//不直接使用Db::find_table的原因，我们要清除键值对
+  delete table;
+  table = nullptr;
+  LOG_INFO("Drop table success. table name=%s, table_id:%d", table_name, table->table_id());
+  return RC::SUCCESS;
 }
 
 Table *Db::find_table(const char *table_name) const
