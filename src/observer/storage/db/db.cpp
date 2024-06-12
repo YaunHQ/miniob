@@ -165,7 +165,7 @@ RC Db::create_table(const char *table_name, span<const AttrInfoSqlNode> attribut
 RC Db::drop_table(const char *table_name)
 {
   RC rc = RC::SUCCESS;
-  unordered_map<string, Table *>::const_iterator iter = opened_tables_.find(table_name);//仿照Db::find_table实现，该函数就在下面。NOTE疑问？为什么是去opened_tables_里面找，关闭的table怎么办？
+  unordered_map<string, Table *>::const_iterator iter = opened_tables_.find(table_name);//仿照Db::find_table实现，该函数就在下面。为什么是去opened_tables_里面找，关闭的table怎么办？答：根本没有关闭的table，数据库启动时会打开所有table，又没有close_table函数。
   if (iter == opened_tables_.end()) {
       LOG_WARN("%s doesn't exist.", table_name);
       return RC::SCHEMA_TABLE_NOT_EXIST; 
