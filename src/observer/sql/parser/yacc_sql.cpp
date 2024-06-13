@@ -1994,7 +1994,7 @@ yyreduce:
       Value * value = new Value();
       int date;
       if(string_to_date(str,date) < 0){
-        yyerror(&(yyloc),NULL,sql_result,scanner,"date invaid",SCF_DATE);
+        yyerror(&(yyloc),NULL,sql_result,scanner,"date invaid");
       }
       else
         value->set_date(date);
