@@ -18,11 +18,11 @@ See the Mulan PSL v2 for more details. */
 #include "common/log/log.h"
 #include <sstream>
 
-const char *ATTR_TYPE_NAME[] = {"undefined", "chars", "ints", "floats", "booleans"};
+const char *ATTR_TYPE_NAME[] = {"undefined", "chars", "ints", "floats", "dates","booleans"};
 
 const char *attr_type_to_string(AttrType type)
 {
-  if (type >= UNDEFINED && type <= FLOATS) {
+  if (type >= UNDEFINED && type <= DATES) {//WHY
     return ATTR_TYPE_NAME[type];
   }
   return "unknown";
@@ -59,6 +59,10 @@ void Value::set_data(char *data, int length)
       num_value_.float_value_ = *(float *)data;
       length_                 = length;
     } break;
+    case DATES: {
+      num_value_.int_value_ = *(int *)data;
+      length_                 = length;
+    } break;
     case BOOLEANS: {
       num_value_.bool_value_ = *(int *)data != 0;
       length_                = length;
@@ -80,6 +84,12 @@ void Value::set_float(float val)
   attr_type_              = FLOATS;
   num_value_.float_value_ = val;
   length_                 = sizeof(val);
+}
+void Value::set_date(int val)
+{
+  attr_type_            = DATES;
+  num_value_.int_value_ = val;
+  length_               = sizeof(val);
 }
 void Value::set_boolean(bool val)
 {
@@ -110,6 +120,9 @@ void Value::set_value(const Value &value)
     } break;
     case CHARS: {
       set_string(value.get_string().c_str());
+    } break;
+    case DATES: {
+      set_date(value.get_int());
     } break;
     case BOOLEANS: {
       set_boolean(value.get_boolean());
@@ -142,6 +155,9 @@ std::string Value::to_string() const
     case FLOATS: {
       os << common::double_to_str(num_value_.float_value_);
     } break;
+    case DATES: {
+      os << num_value_.int_value_;
+    } break;
     case BOOLEANS: {
       os << num_value_.bool_value_;
     } break;
@@ -170,6 +186,9 @@ int Value::compare(const Value &other) const
             this->str_value_.length(),
             (void *)other.str_value_.c_str(),
             other.str_value_.length());
+      } break;
+      case DATES: {
+        return common::compare_int((void *)&this->num_value_.int_value_, (void *)&other.num_value_.int_value_);
       } break;
       case BOOLEANS: {
         return common::compare_int((void *)&this->num_value_.bool_value_, (void *)&other.num_value_.bool_value_);
@@ -206,6 +225,9 @@ int Value::get_int() const
     case FLOATS: {
       return (int)(num_value_.float_value_);
     }
+    case DATES: {
+      return num_value_.int_value_;
+    }
     case BOOLEANS: {
       return (int)(num_value_.bool_value_);
     }
@@ -219,6 +241,7 @@ int Value::get_int() const
 
 float Value::get_float() const
 {
+  ASSERT(attr_type_ != DATES,"date can not get_float()");//NOTE
   switch (attr_type_) {
     case CHARS: {
       try {
@@ -249,6 +272,7 @@ std::string Value::get_string() const { return this->to_string(); }
 
 bool Value::get_boolean() const
 {
+  ASSERT(attr_type_ != DATES,"date can not get_boolean()");
   switch (attr_type_) {
     case CHARS: {
       try {
