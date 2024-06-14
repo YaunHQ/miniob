@@ -104,10 +104,6 @@ RC PlainCommunicator::write_state(SessionEvent *event, bool &need_disconnect)
     const char *result = RC::SUCCESS == sql_result->return_code() ? "SUCCESS" : "FAILURE";
     snprintf(buf, buf_size, "%s\n", result);
   } 
-  else if(sql_result->return_code() == RC::DATE_INVALID)//NOTE
-  {
-    snprintf(buf, buf_size, "%s\n", "FAILURE");
-  } 
   else {
     snprintf(buf, buf_size, "%s > %s\n", strrc(sql_result->return_code()), state_string.c_str());
   }
