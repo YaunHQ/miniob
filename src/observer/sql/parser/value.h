@@ -45,6 +45,7 @@ public:
   Value(AttrType attr_type, char *data, int length = 4) : attr_type_(attr_type) { this->set_data(data, length); }
 
   explicit Value(int val);
+  explicit Value(int val,bool flag);
   explicit Value(float val);
   explicit Value(bool val);
   explicit Value(const char *s, int len = 0);

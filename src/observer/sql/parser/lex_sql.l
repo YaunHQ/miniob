@@ -132,9 +132,9 @@ EXPLAIN                                 RETURN_TOKEN(EXPLAIN);
 "-" |
 "*" |
 "/"                                     { return yytext[0]; }
-\"[^"]*\"                               yylval->string = strdup(yytext); RETURN_TOKEN(SSS);
+\"[0-9]{4}\-[0-9]{2}\-[0-9]{2}\"            yylval->string = strdup(yytext); RETURN_TOKEN(DATE_STR);//放在普通字符串前面，记得要加引号啊
+\"[^"]*\"                               yylval->string = strdup(yytext); RETURN_TOKEN(SSS);//双引号括起来的字符串
 '[^']*\'                                yylval->string = strdup(yytext); RETURN_TOKEN(SSS);
-[0-9]{4}\-[0-9]{2}\-[0-9]{2}            yylval->string = strdup(yytext); RETURN_TOKEN(DATE_STR);
 
 .                                       LOG_DEBUG("Unknown character [%c]",yytext[0]); return yytext[0];
 %%

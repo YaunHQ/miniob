@@ -39,6 +39,8 @@ AttrType attr_type_from_string(const char *s)
 
 Value::Value(int val) { set_int(val); }
 
+Value::Value(int val,bool flag) { set_date(val); }//设置Date，flag只是为了与前一个函数区分
+
 Value::Value(float val) { set_float(val); }
 
 Value::Value(bool val) { set_boolean(val); }

@@ -395,15 +395,12 @@ value:
     |DATE_STR {
       char *tmp = common::substr($1,1,strlen($1)-2);//WHY?从1开始
       std::string str(tmp);
-      Value * value = new Value();
       int date;
       if(string_to_date(str,date) < 0){
         yyerror(&@$,NULL,sql_result,scanner,"date invaid");
       }
-      else
-        value->set_date(date);
-      $$ = value;
-      free(tmp);
+      $$ = new Value(date,true);
+      free(tmp);//这里tmp 和 $1 是动态分配的内存，而 str 是一个局部 std::string 对象，它的析构会自动释放内存，在这里 free(str) 会导致错误
       free($1);
     }
     ;
