@@ -23,7 +23,7 @@ const char *ATTR_TYPE_NAME[] = {"undefined", "chars", "ints", "floats", "dates",
 
 const char *attr_type_to_string(AttrType type)
 {
-  if (type >= UNDEFINED && type <= DATES) {//WHY
+  if (type >= UNDEFINED && type <= DATES) {//boolean类型，当前不是由parser解析出来的，是程序内部使用的
     return ATTR_TYPE_NAME[type];
   }
   return "unknown";

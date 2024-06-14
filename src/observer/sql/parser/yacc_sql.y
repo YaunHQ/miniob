@@ -393,7 +393,7 @@ value:
       free($1);
     }
     |DATE_STR {
-      char *tmp = common::substr($1,1,strlen($1)-2);//WHY?从1开始
+      char *tmp = common::substr($1,1,strlen($1)-2);//从1开始因为有空格
       std::string str(tmp);
       int date;
       if(string_to_date(str,date) < 0){

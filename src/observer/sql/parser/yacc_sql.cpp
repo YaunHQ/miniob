@@ -1989,7 +1989,7 @@ yyreduce:
   case 50: /* value: DATE_STR  */
 #line 395 "yacc_sql.y"
               {
-      char *tmp = common::substr((yyvsp[0].string),1,strlen((yyvsp[0].string))-2);//WHY?从1开始
+      char *tmp = common::substr((yyvsp[0].string),1,strlen((yyvsp[0].string))-2);//从1开始因为有空格
       std::string str(tmp);
       int date;
       if(string_to_date(str,date) < 0){
