@@ -17,6 +17,7 @@ See the Mulan PSL v2 for more details. */
 #include "common/lang/string.h"
 #include "common/log/log.h"
 #include <sstream>
+#include "common/time/date.h"
 
 const char *ATTR_TYPE_NAME[] = {"undefined", "chars", "ints", "floats", "dates","booleans"};
 
@@ -158,7 +159,7 @@ std::string Value::to_string() const
       os << common::double_to_str(num_value_.float_value_);
     } break;
     case DATES: {
-      os << num_value_.int_value_;
+      os << date_to_string(num_value_.int_value_);
     } break;
     case BOOLEANS: {
       os << num_value_.bool_value_;
